@@ -37,7 +37,12 @@
     document.addEventListener("DOMContentLoaded", function(event) {
       let parts = window.location.hash.substring(1).split(",");
       if (parts.length == 4) {
-        drawRect(parts[0], parts[1], parts[2], parts[3]);
+        const x = parseInt(parts[0]);
+        const y = parseInt(parts[1]);
+        const width = parseInt(parts[2]);
+        const height = parseInt(parts[3]);
+        drawRect(x, y, width, height);
+        drawLine(x+width, y+height);
       }
     });
 
@@ -45,34 +50,33 @@
       ctx.clearRect(0,0,canvas.width,canvas.height); //clear canvas
       ctx.beginPath();
       ctx.rect(x, y, width, height);
-      ctx.strokeStyle = '#F04C5D';
-      ctx.lineWidth = 7;
+      ctx.strokeStyle = '#1C37EA';
+      ctx.lineWidth = 5;
       ctx.stroke();
+
+      drawLine(x, y, width, height);
+
       window.location.hash = `${x},${y},${width},${height}`
     }
 
-    function drawAtPoint(e) {
-      drawRect(e.layerX-20, e.layerY-20, 10, 10)
+    function drawLine(x, y, width, height) {
+      ctx.beginPath();
+      ctx.moveTo(750, 700);
+
+      ctx.lineTo(x+width/2, y+height);
+      ctx.stroke();
+
+      ctx.font = '48px Avenir';
+      ctx.fillText('👀', 725, 750);
+      ctx.font = '24px Avenir';
+      ctx.fillText('They are here!', 675, 780);
     }
 
-    canvas.addEventListener("touchstart", function(e) {
-      console.log(e)
-      if (touches == 0) {
-        firstTouch = e.touches[0]
-      } else if (touches == 1) {
-        console.log("drawing...")
-        drawAtPoint(firstTouch)
-      }
-
-      touches += 1;
-
-    })
-
-    canvas.addEventListener("touchend", function(e) {
-      touches -= 1;
-
-      console.log(touches)
-    })
+    function drawAtPoint(e) {
+      const x = e.layerX-20;
+      const y = e.layerY-20;
+      drawRect(x, y, 10, 10);
+    }
 
     canvas.ondblclick = drawAtPoint;
 
