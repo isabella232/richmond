@@ -138,10 +138,10 @@
     document.querySelectorAll("#rooms li a").forEach(function(e) {
       e.addEventListener("click", function() {
         drawRect(
-          e.getAttribute('x'),
-          e.getAttribute('y'),
-          e.getAttribute('w'),
-          e.getAttribute('h')
+          parseInt(e.getAttribute('x')),
+          parseInt(e.getAttribute('y')),
+          parseInt(e.getAttribute('w')),
+          parseInt(e.getAttribute('h'))
         );
         return false
       });
