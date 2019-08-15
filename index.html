@@ -1,155 +1,162 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Culture Amp - Richmond Office Map</title>
-  <style>
-    canvas {
-      background: url('floorplan-welcome.svg') no-repeat;
-      background-size: 110%;
-      background-position: -40px -175px;
-      border: 3px solid black;
-      float: left;
-      margin-right: 30px;
-    }
-  </style>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-</head>
-<body>
-  <canvas id='map' width='1400px' height='900px'></canvas>
-  <ul id="rooms">
-  </ul>
-  <script>
-    let canvas = document.getElementById('map');
-    let boundRect = canvas.getBoundingClientRect();
-    let rect = canvas.getBoundingClientRect();
-    let ctx = canvas.getContext('2d');
-
-    let canvasx = boundRect.x;
-    let canvasy = boundRect.y;
-
-    let drawing = false;
-
-    let last_mousex;
-    let last_mousey;
-
-    let touches = 0;
-    let firstTouch = null;
-
-    document.addEventListener("DOMContentLoaded", function(event) {
-      let parts = window.location.hash.substring(1).split(",");
-      if (parts.length == 4) {
-        const x = parseInt(parts[0]);
-        const y = parseInt(parts[1]);
-        const width = parseInt(parts[2]);
-        const height = parseInt(parts[3]);
-        drawRect(x, y, width, height);
-        drawLine(x+width, y+height);
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Culture Amp - Richmond Office Map</title>
+    <style>
+      canvas {
+        background: url("floorplan-welcome.svg") no-repeat;
+        background-size: 110%;
+        background-position: -40px -175px;
+        border: 3px solid black;
+        float: left;
+        margin-right: 30px;
       }
-    });
+    </style>
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+  </head>
+  <body>
+    <canvas id="map" width="1400px" height="900px"></canvas>
+    <ul id="rooms"></ul>
+    <script>
+      let canvas = document.getElementById("map");
+      let boundRect = canvas.getBoundingClientRect();
+      let rect = canvas.getBoundingClientRect();
+      let ctx = canvas.getContext("2d");
 
-    function drawRect(x, y, width, height) {
-      ctx.clearRect(0,0,canvas.width,canvas.height); //clear canvas
-      ctx.beginPath();
-      ctx.rect(x, y, width, height);
-      ctx.strokeStyle = '#1C37EA';
-      ctx.lineWidth = 5;
-      ctx.stroke();
+      let canvasx = boundRect.x;
+      let canvasy = boundRect.y;
 
-      drawLine(x, y, width, height);
+      let drawing = false;
 
-      window.location.hash = `${x},${y},${width},${height}`
-    }
+      let last_mousex;
+      let last_mousey;
 
-    function drawLine(x, y, width, height) {
-      ctx.beginPath();
-      ctx.moveTo(750, 700);
+      let touches = 0;
+      let firstTouch = null;
 
-      ctx.lineTo(x+width/2, y+height);
-      ctx.stroke();
-
-      ctx.font = '48px Avenir';
-      ctx.fillText('👀', 725, 750);
-      ctx.font = '24px Avenir';
-      ctx.fillText('They are here!', 675, 780);
-    }
-
-    function drawAtPoint(e) {
-      const x = e.layerX-10;
-      const y = e.layerY-10;
-      drawRect(x, y, 10, 10);
-    }
-
-    canvas.ondblclick = drawAtPoint;
-
-    canvas.onmousedown = function(e) {
-      last_mousex = parseInt(e.layerX-canvasx);
-	    last_mousey = parseInt(e.layerY-canvasy);
-      drawing = true;
-    }
-
-    canvas.onmouseup = function(e) {
-      drawing = false;
-    }
-
-    canvas.onmousemove = function(e) {
-      let mousex = parseInt(e.layerX-canvasx);
-      let mousey = parseInt(e.layerY-canvasy);
-      if(drawing) {
-        var width = mousex-last_mousex;
-        var height = mousey-last_mousey;
-        drawRect(last_mousex+10, last_mousey+10, width, height);
-      }
-    }
-
-    function addRoom(properties) {
-      var li = document.createElement("li");
-      var a = document.createElement("a");
-      a.setAttribute('href', "javascript:");
-      a.setAttribute('x', properties[1]);
-      a.setAttribute('y', properties[2]);
-      a.setAttribute('w', properties[3]);
-      a.setAttribute('h', properties[4]);
-      li.appendChild(a);
-      a.innerText = rooms[i][0];
-      document.getElementById('rooms').appendChild(li);
-    }
-
-    rooms = [
-      ['Bond', 534,284,64,53],
-      ['Collins', 331,204,56,58],
-      ['Dover', 328,160,68,50],
-      ['Enso', 1309,361,-331,-143],
-      ['Market', 270,207,62,49],
-      ['Merino', 533,335,64,49],
-      ['Queen', 274,161,57,47],
-      ['Singer', 597,201,66,61],
-      ['The Golden Fleece', 842,299,131,77],
-      ['The Mill', 662,193,101,74],
-      ['Union Special', 820,201,-60,57],
-
-      ['First Aid Kit', 1181,153,28,44],
-
-      ['Lost and Found (plastic boxes)', 226,252,22,18],
-    ]
-
-    for (var i = 0; i < rooms.length; ++i) {
-      addRoom(rooms[i]);
-    }
-
-    document.querySelectorAll("#rooms li a").forEach(function(e) {
-      e.addEventListener("click", function() {
-        drawRect(
-          parseInt(e.getAttribute('x')),
-          parseInt(e.getAttribute('y')),
-          parseInt(e.getAttribute('w')),
-          parseInt(e.getAttribute('h'))
-        );
-        return false
+      document.addEventListener("DOMContentLoaded", function(event) {
+        let parts = window.location.hash.substring(1).split(",");
+        if (parts.length == 4) {
+          const x = parseInt(parts[0]);
+          const y = parseInt(parts[1]);
+          const width = parseInt(parts[2]);
+          const height = parseInt(parts[3]);
+          drawRect(x, y, width, height);
+          drawLine(x, y, width, height);
+        }
       });
-    });
-  </script>
-</body>
+
+      function drawRect(x, y, width, height) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height); //clear canvas
+        ctx.beginPath();
+        ctx.rect(x, y, width, height);
+        ctx.strokeStyle = "#1C37EA";
+        ctx.lineWidth = 5;
+        ctx.stroke();
+
+        drawLine(x, y, width, height);
+
+        window.location.hash = `${x},${y},${width},${height}`;
+      }
+
+      function drawLine(x, y, width, height) {
+        ctx.beginPath();
+        ctx.moveTo(750, 700);
+
+        ctx.lineTo(x + width / 2, y + height);
+        ctx.stroke();
+
+        ctx.font = "48px Avenir";
+        ctx.fillText("👀", 725, 750);
+        ctx.font = "24px Avenir";
+
+        if (width + height > 150) {
+          ctx.fillText("They are here!", 675, 780);
+        } else {
+          ctx.fillText("I am here!", 700, 780);
+        }
+      }
+
+      function drawAtPoint(e) {
+        const x = e.layerX - 10;
+        const y = e.layerY - 10;
+        drawRect(x, y, 10, 10);
+      }
+
+      canvas.ondblclick = drawAtPoint;
+
+      canvas.onmousedown = function(e) {
+        last_mousex = parseInt(e.layerX - canvasx);
+        last_mousey = parseInt(e.layerY - canvasy);
+        drawing = true;
+      };
+
+      canvas.onmouseup = function(e) {
+        drawing = false;
+      };
+
+      canvas.onmousemove = function(e) {
+        let mousex = parseInt(e.layerX - canvasx);
+        let mousey = parseInt(e.layerY - canvasy);
+        if (drawing) {
+          var width = mousex - last_mousex;
+          var height = mousey - last_mousey;
+          drawRect(last_mousex + 10, last_mousey + 10, width, height);
+        }
+      };
+
+      function addRoom(properties) {
+        var li = document.createElement("li");
+        var a = document.createElement("a");
+        a.setAttribute("href", "javascript:");
+        a.setAttribute("x", properties[1]);
+        a.setAttribute("y", properties[2]);
+        a.setAttribute("w", properties[3]);
+        a.setAttribute("h", properties[4]);
+        li.appendChild(a);
+        a.innerText = rooms[i][0];
+        document.getElementById("rooms").appendChild(li);
+      }
+
+      rooms = [
+        ["Bond", 534, 284, 64, 53],
+        ["Collins", 331, 204, 56, 58],
+        ["Dover", 328, 160, 68, 50],
+        ["Enso", 1309, 361, -331, -143],
+        ["Market", 270, 207, 62, 49],
+        ["Merino", 533, 335, 64, 49],
+        ["Queen", 274, 161, 57, 47],
+        ["Singer", 597, 201, 66, 61],
+        ["The Golden Fleece", 842, 299, 131, 77],
+        ["The Mill", 662, 193, 101, 74],
+        ["Union Special", 820, 201, -60, 57],
+
+        ["First Aid Kit", 1181, 153, 28, 44],
+
+        ["Lost and Found (plastic boxes)", 226, 252, 22, 18]
+      ];
+
+      for (var i = 0; i < rooms.length; ++i) {
+        addRoom(rooms[i]);
+      }
+
+      document.querySelectorAll("#rooms li a").forEach(function(e) {
+        e.addEventListener("click", function() {
+          drawRect(
+            parseInt(e.getAttribute("x")),
+            parseInt(e.getAttribute("y")),
+            parseInt(e.getAttribute("w")),
+            parseInt(e.getAttribute("h"))
+          );
+          return false;
+        });
+      });
+    </script>
+  </body>
 </html>
