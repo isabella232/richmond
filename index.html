@@ -76,7 +76,7 @@
         ctx.fillText("👀", 725, 750);
         ctx.font = "24px Avenir";
 
-        if (Math.abs(width + height) > 150) {
+        if (Math.abs(width) + Math.abs(height) > 150) {
           ctx.fillText("They are here!", 675, 780);
         } else {
           ctx.fillText("I am here!", 700, 780);
