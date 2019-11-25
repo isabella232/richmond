@@ -41,6 +41,11 @@
       let firstTouch = null;
 
       document.addEventListener("DOMContentLoaded", function(event) {
+        if (window.location.search.includes("ryan")) {
+          drawRect(750, 315, 25, 25);
+          return
+        }
+
         let parts = window.location.hash.substring(1).split(",");
         if (parts.length == 4) {
           const x = parseInt(parts[0]);
@@ -48,7 +53,6 @@
           const width = parseInt(parts[2]);
           const height = parseInt(parts[3]);
           drawRect(x, y, width, height);
-          drawLine(x, y, width, height);
         }
       });
 
@@ -75,6 +79,11 @@
         ctx.font = "48px Avenir";
         ctx.fillText("👀", 725, 750);
         ctx.font = "24px Avenir";
+
+        if (window.location.search.includes("ryan")) {
+          ctx.fillText("Ryan was here!", 675, 780);
+          return
+        }
 
         if (Math.abs(width) + Math.abs(height) > 150) {
           ctx.fillText("They are here!", 675, 780);
